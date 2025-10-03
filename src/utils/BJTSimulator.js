@@ -97,6 +97,16 @@ export class BJTSimulator {
         
         // Generate VCE range from 0 to 20V in 0.5V steps
         for (let VCE = 0; VCE <= 20; VCE += 0.5) {
+            // When VCE is 0 or very close to 0, collector current should be 0
+            // This is the saturation region behavior
+            if (VCE < 0.1) {
+                data.push({
+                    VCE: parseFloat(VCE.toFixed(2)),
+                    IC: 0 // Collector current is 0 at VCE = 0
+                });
+                continue;
+            }
+            
             const VBE = this.calculateVBE(IB, VCE, transistor);
             const IC = this.calculateCollectorCurrent(VBE, VCE, transistor);
             
